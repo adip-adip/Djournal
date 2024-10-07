@@ -52,6 +52,34 @@ class JournalService {
     async awardPoints(userId, points) {
         return await UserModel.findByIdAndUpdate(userId, { $inc: { points: points } });
     }
+
+    async calculateStreak(userId) {
+        const today = moment().startOf('day');
+        const entries = await JournalModel.find({
+            user: userId,
+            createdAt: { $gte: today.subtract(7, 'days').toDate() }, // Check entries in the last week
+        }).sort({ createdAt: -1 });
+    
+        let streak = 0;
+    
+        for (let i = 0; i < entries.length; i++) {
+            const entryDate = moment(entries[i].createdAt).startOf('day');
+    
+            // If the entry is from today or consecutive days, increase the streak
+            if (entryDate.isSame(today, 'day')) {
+                streak++;
+                today.subtract(1, 'days'); // Move to yesterday
+            } else if (entryDate.isSame(today, 'day')) {
+                streak++;
+                break; // Stop if the streak is broken
+            } else {
+                break; // No more consecutive days
+            }
+        }
+    
+        return streak;
+    }
+
 }
 
 const journalSvc = new JournalService();

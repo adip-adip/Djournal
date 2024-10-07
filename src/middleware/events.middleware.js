@@ -9,8 +9,10 @@ const EventName = {
 }
 
 myEvent.on(EventName.REGISTER_EMAIL, async (data) => {
+    console.log(data)
     try{
         await mailsvc.mailSend({
+
             to: data.email, 
             sub: "Activate your account!",
             message: `

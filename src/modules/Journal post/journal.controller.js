@@ -30,25 +30,29 @@ class JournalController {
                     status: "validation_error"
                 });
             }
-
+    
             const data = journalSvc.transFromData(req);
-
+    
             // Check if the user has posted today
             const today = moment().startOf('day');
             const recentJournal = await journalSvc.getRecentJournalByUser(req.authUser._id, today);
-
+    
             if (recentJournal) {
                 return res.status(400).json({
                     message: "You can only post once a day.",
                     status: "content_creation_error"
                 });
             }
-
+    
             const content = await journalSvc.createJournal(data);
             await journalSvc.awardPoints(req.authUser._id, 10);
-
+    
+            // Calculate the streak
+            const streak = await journalSvc.calculateStreak(req.authUser._id);
+    
             res.status(201).json({
                 result: content,
+                streak, // Include streak in the response
                 meta: null,
                 message: "Content created successfully",
                 status: "content_created"
@@ -57,6 +61,7 @@ class JournalController {
             next(exception);
         }
     }
+    
 
     // This function is used to show a specific journal entry
     show = async (req, res, next) => {

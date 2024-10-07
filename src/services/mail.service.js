@@ -35,12 +35,7 @@ class MailService {
             const response = await this.transport.sendMail({
                 to: to,
                 from: process.env.SMTP_FROM,
-                // cc: "",
-                // bcc: "", 
-                // attachments: ["/Voumes/Data/codes/mern-31/api-31/public/uploads/user/1721272117260-205.svg"],
                 subject: sub, 
-                // text: "",
-                // // <p>text</p>
                 html: message
             })
             console.log(response)
@@ -51,6 +46,7 @@ class MailService {
             throw {message: "Error sending email", detail: exception, status: "EMAIL_SENDING_ERROR"}
         }
     }
+
 }
 
 const mailsvc = new MailService()
