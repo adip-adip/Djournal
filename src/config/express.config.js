@@ -53,7 +53,7 @@ app.use((error, req, res , next) => {
         result = msgs;
     }
 
-    res.status(code).status.json({
+    res.status(code).json({
         result: result,
         message: message,
         meta: null,

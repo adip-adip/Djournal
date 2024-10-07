@@ -3,11 +3,12 @@ const {Status} = require("../../config/constants.config")
 const {myEvent,EventName} = require("../../middleware/events.middleware")
 const {randomStringGenerator} = require("../../utilities/helper")
 const jwt = require("jsonwebtoken")
+const authSvc = require("./auth.service")
 
 class AuthController {
     register = async (req,res,next) => {
         try{
-            const data = await authSvc.transaformRegsiterUser(req);
+            const data = await authSvc.transformRegisterUser(req);
             await authSvc.registerUser(data);
             myEvent.emit(EventName.REGISTER_EMAIL, {name: data.name, email: data.email, token: data.activationToken})
 
@@ -36,9 +37,11 @@ class AuthController {
     activateRegisteredUser =  async (req, res, next) => {
         try{
             const token = req.params.token;
+            console.log(token)
             const userDetail = await authSvc.getSingleUserByFilter({
                 activationToken: token
             }) 
+            console.log(userDetail)
 
             // verify expiry of token 
             let tokenExpiry = new Date(userDetail.activeFor);

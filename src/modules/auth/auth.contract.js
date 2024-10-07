@@ -7,8 +7,7 @@ const registerDTO= joi.object({
     confirmPassword: joi.string().equal(joi.ref('password')).required().messages({
         "any.only": "Password and confirm Passwrod does not match"
     }),
-    phone: joi.string(),
-    address: joi.string(),
+
     role: joi.string().regex(/^(premium|customer)$/)
 })
 
